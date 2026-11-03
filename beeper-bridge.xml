@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>beeper-bridge</Name>
+  <Repository>ghcr.io/beeper/bridge-manager:latest</Repository>
+  <Registry>https://github.com/beeper/bridge-manager</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://developers.beeper.com/bridges/self-hosting/</Support>
+  <Project>https://github.com/beeper/bridge-manager</Project>
+  <Overview>Run one official self-hosted Beeper bridge in this container. Every bridge reuses the same appdata folder. To add another bridge, install this template again with a new container name and a new bridge name. Two containers may share the folder only when their bridge names differ. Self-hosting is outside normal Beeper support. Docs: https://developers.beeper.com/bridges/self-hosting/ Help: #self-hosting:beeper.com</Overview>
+  <Category>Productivity:</Category>
+  <WebUI/>
+  <TemplateURL/>
+  <Icon/>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="Bridge Name" Target="BRIDGE_NAME" Default="sh-whatsapp" Mode="" Description="Bridge to run. Use sh- plus a bridge id, for example sh-whatsapp or sh-telegram. The README lists every supported id. Each container needs its own bridge name. iMessage and iMessage Go are not supported by this template." Type="Variable" Display="always" Required="true" Mask="false">sh-whatsapp</Config>
+  <Config Name="Beeper Access Token" Target="MATRIX_ACCESS_TOKEN" Default="" Mode="" Description="Beeper access token. Copy it from Beeper Desktop under Settings, Help and About, or from the access_token field in ~/.config/bbctl/config.json after bbctl login on another machine. A change here applies the next time this container starts." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="Appdata" Target="/data" Default="/mnt/user/appdata/beeper-bridge" Mode="rw" Description="Shared data folder for every bridge container. Keep this path the same for every bridge. Two containers may use this same folder only when their bridge names differ." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/beeper-bridge</Config>
+</Container>
