@@ -58,7 +58,7 @@ Add the `beeper-bridge` template again. Set a new container name and a new bridg
 Every bridge container uses that same folder. `bbctl` separates them inside it:
 
 - `/data/sh-whatsapp` holds that bridge's config, logs, and a Python virtualenv when the bridge needs one.
-- `/data/db` holds database files. Names start with the bridge name, such as `sh-whatsapp-`.
+- `/data/db/<bridge name>-<program>.db` is that bridge's database. `<bridge name>` is the Bridge Name for that container. `<program>` is listed in [Remove a bridge](#remove-a-bridge). WhatsApp with bridge name `sh-whatsapp` uses `/data/db/sh-whatsapp-mautrix-whatsapp.db`. On the host, that file is `/mnt/user/appdata/beeper-bridge/db/sh-whatsapp-mautrix-whatsapp.db`.
 - `/data/binaries` holds downloaded bridge programs shared by every container using this folder.
 
 Two containers may use this same folder only when their bridge names differ. Two containers both set to `sh-whatsapp` would write the same files.
@@ -66,7 +66,34 @@ Two containers may use this same folder only when their bridge names differ. Two
 ## Remove a bridge
 
 1. Open the container console in Unraid and run `bbctl delete sh-<name>`. Confirm the prompt. This deletes the bridge on Beeper's servers and removes `/data/sh-<name>`.
-2. Delete files in `/data/db` whose names start with `sh-<name>-`. `bbctl delete` does not remove those files. Starting that bridge name again reuses them and produces errors.
+2. Delete that bridge's database files from the appdata share. `bbctl delete` does not remove them. The file name is `<bridge name>-<program>.db`, in `/mnt/user/appdata/beeper-bridge/db/`. `<bridge name>` is the exact Bridge Name from that container. `<program>` comes from this table.
+
+   | Bridge name contains | Program |
+   | --- | --- |
+   | `telegram` | `mautrix-telegram` |
+   | `whatsapp` | `mautrix-whatsapp` |
+   | `signal` | `mautrix-signal` |
+   | `discord` | `mautrix-discord` |
+   | `slack` | `mautrix-slack` |
+   | `gmessages`, `googlemessages`, `rcs`, or `sms` | `mautrix-gmessages` |
+   | `gvoice` or `googlevoice` | `mautrix-gvoice` |
+   | `meta`, `instagram`, or `facebook` | `mautrix-meta` |
+   | `googlechat` or `gchat` | `mautrix-googlechat` |
+   | `twitter` | `mautrix-twitter` |
+   | `bluesky` or `bsky` | `mautrix-bluesky` |
+   | `linkedin` | `mautrix-linkedin` |
+
+   For bridge name `sh-whatsapp`, delete these files when they are present:
+
+   - `/mnt/user/appdata/beeper-bridge/db/sh-whatsapp-mautrix-whatsapp.db`
+   - `/mnt/user/appdata/beeper-bridge/db/sh-whatsapp-mautrix-whatsapp.db-wal`
+   - `/mnt/user/appdata/beeper-bridge/db/sh-whatsapp-mautrix-whatsapp.db-shm`
+
+   Inside the container, the same files are `/data/db/sh-whatsapp-mautrix-whatsapp.db`, `/data/db/sh-whatsapp-mautrix-whatsapp.db-wal`, and `/data/db/sh-whatsapp-mautrix-whatsapp.db-shm`.
+
+   A second WhatsApp whose Bridge Name is `sh-whatsapp-work` uses `sh-whatsapp-work-mautrix-whatsapp.db`. Delete the files for the bridge name you removed.
+
+   IRC (Heisenbridge) does not use a file in `db/`. `bbctl delete` removes its directory under `/data`.
 3. Remove the container in the Unraid Docker tab.
 
 Removing the container alone leaves the bridge registered on Beeper and leaves its files in appdata. Deleting the bridge from the Beeper client leaves the local database in place.
@@ -76,4 +103,4 @@ Removing the container alone leaves the bridge registered on Beeper and leaves i
 - `BRIDGE_NAME not set` means the bridge name field is empty.
 - `MATRIX_ACCESS_TOKEN not set` means the token field is empty.
 - A rejected token fails while `bbctl` checks the account. The Unraid log shows the `bbctl` error.
-- A bridge removed on Beeper while its database remains under `/data/db` will reuse that database the next time the same bridge name starts. Remove `/data/sh-<name>` and the matching `/data/db/sh-<name>-` files first.
+- A bridge removed on Beeper while its database file remains will reuse that file the next time the same bridge name starts. Remove `/data/sh-<name>` and the database files for that bridge name under `/mnt/user/appdata/beeper-bridge/db/`. The WhatsApp files for bridge name `sh-whatsapp` are listed in [Remove a bridge](#remove-a-bridge).

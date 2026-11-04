@@ -61,13 +61,28 @@ class ReadmeTest(unittest.TestCase):
     def test_login_and_layout(self):
         self.assertIn("@sh-whatsappbot:beeper.local", self.readme)
         self.assertIn("`/data/sh-whatsapp`", self.readme)
-        self.assertIn("`/data/db`", self.readme)
+        self.assertIn("/data/db/", self.readme)
         self.assertIn("`/data/binaries`", self.readme)
 
     def test_removal(self):
         self.assertIn("bbctl delete sh-<name>", self.readme)
-        self.assertIn("sh-<name>-", self.readme)
-        self.assertIn("/data/db", self.readme)
+        self.assertIn("`/data/db/<bridge name>-<program>.db`", self.readme)
+        self.assertIn(
+            "/mnt/user/appdata/beeper-bridge/db/sh-whatsapp-mautrix-whatsapp.db",
+            self.readme,
+        )
+        self.assertIn(
+            "/mnt/user/appdata/beeper-bridge/db/sh-whatsapp-mautrix-whatsapp.db-wal",
+            self.readme,
+        )
+        self.assertIn(
+            "/mnt/user/appdata/beeper-bridge/db/sh-whatsapp-mautrix-whatsapp.db-shm",
+            self.readme,
+        )
+        self.assertIn("`sh-whatsapp-work-mautrix-whatsapp.db`", self.readme)
+        self.assertIn("`mautrix-telegram`", self.readme)
+        self.assertIn("`mautrix-googlechat`", self.readme)
+        self.assertIn("`mautrix-meta`", self.readme)
 
     def test_log_messages(self):
         self.assertIn("BRIDGE_NAME not set", self.readme)
